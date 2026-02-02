@@ -1,0 +1,106 @@
+/* 1. 기본 스타일 */
+:root {
+    --primary-color: #007AFF;
+    --bg-color: #f5f5f7;
+    --card-bg: #ffffff;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 40px 20px;
+    color: #333;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+/* 2. 그리드 레이아웃 (카드 배치) */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 3. 카드 디자인 */
+.card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+/* 4. Rive 캔버스 (애니메이션 영역) */
+canvas {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: black; /* 투명 배경일 때 구분하기 위함 */
+}
+
+/* 5. 파일명 및 링크 영역 */
+.file-name {
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.link-container {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+}
+
+input.link-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #f9f9f9;
+    color: #666;
+    font-family: monospace;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+button.copy-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+button.copy-btn:hover {
+    background-color: #0056b3;
+}
+button.copy-btn.copied {
+    background-color: #34c759; /* 성공 시 초록색 */
+}
+
+/* 아트보드 뱃지 */
+.badge {
+    font-size: 0.75rem;
+    background: #eee;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #555;
+    margin-bottom: 10px;
+}

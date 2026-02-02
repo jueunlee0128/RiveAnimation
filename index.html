@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoaSub Animation Assets</title>
+    <script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>🎬 MoaSub Rive Gallery</h1>
+    
+    <div class="gallery-grid" id="gallery">
+        </div>
+
+    <script>
+        const REPO_URL = window.location.origin + window.location.pathname.replace('index.html', '');
+        const RIVE_FOLDER = 'rive/';
+
+        const files = [
+            // { file: '파일명.riv', artboard: '아트보드명', name: '표시 이름' }
+            { file: 'TabIconSet.riv', artboard: 'eye-CLICK', name: '눈' },
+            { file: 'TabIconSet.riv', artboard: 'Gear-CLICK', name: '기어' },
+            { file: 'TabIconSet.riv', artboard: 'Home-CLICK', name: '홈' },
+            { file: 'TabIconSet.riv', artboard: 'Download-CLICK', name: '다운로드' },
+        ];
+
+        const gallery = document.getElementById('gallery');
+
+        files.forEach((item, index) => {
+            const fullUrl = `${REPO_URL}${RIVE_FOLDER}${item.file}`;
+            const card = document.createElement('div');
+            card.className = 'card';
+            const canvasId = `canvas-${index}`;
+
+            card.innerHTML = `
+                <canvas id="${canvasId}"></canvas>
+                <div class="file-name">${item.name}</div>
+                ${item.artboard ? `<span class="badge">Artboard: ${item.artboard}</span>` : ''}
+                <div class="link-container">
+                    <input type="text" class="link-input" value="${fullUrl}" readonly>
+                    <button class="copy-btn" onclick="copyLink(this, '${fullUrl}')">Copy</button>
+                </div>
+            `;
+            gallery.appendChild(card);
+
+            // ★ Rive 인스턴스 생성 및 클릭 이벤트 연결
+            const r = new rive.Rive({
+                src: fullUrl,
+                canvas: document.getElementById(canvasId),
+                autoplay: true,
+                artboard: item.artboard,
+                stateMachines: "State Machine 1", // ★ 필수: 상태 머신 이름 (대부분 "State Machine 1")
+                onLoad: () => {
+                    r.resizeDrawingSurfaceToCanvas();
+                }
+            });
+
+            // ★ 캔버스 클릭 이벤트 리스너 추가
+            document.getElementById(canvasId).addEventListener('click', () => {
+                // 1. 해당 아트보드의 입력값(Inputs)들을 모두 가져옴
+                const inputs = r.stateMachineInputs("State Machine 1");
+                
+                if (!inputs) return;
+
+                // 2. 흔히 쓰이는 이름('active', 'click', 'trigger', 'hover')을 찾음
+                const targetInput = inputs.find(i => 
+                    i.name.toLowerCase() === 'active' || 
+                    i.name.toLowerCase() === 'click' || 
+                    i.name.toLowerCase() === 'trigger' ||
+                    i.name.toLowerCase() === 'hover'
+                );
+
+                // 3. 찾았다면 타입에 맞춰 실행
+                if (targetInput) {
+                    // Boolean 타입(True/False)인 경우 -> 토글
+                    if (targetInput.type === rive.StateMachineInputType.Boolean) {
+                        targetInput.value = !targetInput.value;
+                    } 
+                    // Trigger 타입(방아쇠)인 경우 -> 발사
+                    else if (targetInput.type === rive.StateMachineInputType.Trigger) {
+                        targetInput.fire();
+                    }
+                } else {
+                    console.log("클릭 가능한 Input을 찾지 못했습니다. Input 이름을 확인하세요:", inputs.map(i => i.name));
+                }
+            });
+        });
+
+        function copyLink(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'OK!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
