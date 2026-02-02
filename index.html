@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <h1>🎬 MoaSub Rive Gallery</h1>
+    <h1>(미정) Rive 애니메이션</h1>
     
     <div class="gallery-grid" id="gallery">
         </div>
@@ -19,11 +19,18 @@
         const RIVE_FOLDER = 'rive/';
 
         const files = [
-            // { file: '파일명.riv', artboard: '아트보드명', name: '표시 이름' }
             { file: 'TabIconSet.riv', artboard: 'eye-CLICK', name: '눈' },
             { file: 'TabIconSet.riv', artboard: 'Gear-CLICK', name: '기어' },
             { file: 'TabIconSet.riv', artboard: 'Home-CLICK', name: '홈' },
-            { file: 'TabIconSet.riv', artboard: 'Download-CLICK', name: '다운로드' },
+            { file: 'TabIconSet.riv', artboard: 'Zap-CLICK', name: '번개' },
+            { file: 'TabIconSet.riv', artboard: 'Clock-CLICK', name: '시계' },
+            { file: 'TabIconSet.riv', artboard: 'Stars-CLICK', name: '별' },
+            { file: 'TabIconSet.riv', artboard: 'Arrow-CLICK', name: '화살표' },
+            { file: 'TabIconSet.riv', artboard: 'Diamond-CLICK', name: '다이아몬드' },
+            { file: 'TabIconSet.riv', artboard: 'Edit-CLICK', name: '수정' },
+            { file: 'TabIconSet.riv', artboard: 'Dots-CLICK', name: '더보기' },
+            { file: 'TabIconSet.riv', artboard: 'Sun-CLICK', name: '다크모드' },
+            { file: 'TabIconSet.riv', artboard: 'Refresh-CLICK', name: '새로고침' },
         ];
 
         const gallery = document.getElementById('gallery');
@@ -45,26 +52,21 @@
             `;
             gallery.appendChild(card);
 
-            // ★ Rive 인스턴스 생성 및 클릭 이벤트 연결
             const r = new rive.Rive({
                 src: fullUrl,
                 canvas: document.getElementById(canvasId),
                 autoplay: true,
                 artboard: item.artboard,
-                stateMachines: "State Machine 1", // ★ 필수: 상태 머신 이름 (대부분 "State Machine 1")
+                stateMachines: "State-machine",
                 onLoad: () => {
                     r.resizeDrawingSurfaceToCanvas();
                 }
             });
 
-            // ★ 캔버스 클릭 이벤트 리스너 추가
             document.getElementById(canvasId).addEventListener('click', () => {
-                // 1. 해당 아트보드의 입력값(Inputs)들을 모두 가져옴
-                const inputs = r.stateMachineInputs("State Machine 1");
                 
                 if (!inputs) return;
 
-                // 2. 흔히 쓰이는 이름('active', 'click', 'trigger', 'hover')을 찾음
                 const targetInput = inputs.find(i => 
                     i.name.toLowerCase() === 'active' || 
                     i.name.toLowerCase() === 'click' || 
@@ -72,13 +74,10 @@
                     i.name.toLowerCase() === 'hover'
                 );
 
-                // 3. 찾았다면 타입에 맞춰 실행
                 if (targetInput) {
-                    // Boolean 타입(True/False)인 경우 -> 토글
                     if (targetInput.type === rive.StateMachineInputType.Boolean) {
                         targetInput.value = !targetInput.value;
                     } 
-                    // Trigger 타입(방아쇠)인 경우 -> 발사
                     else if (targetInput.type === rive.StateMachineInputType.Trigger) {
                         targetInput.fire();
                     }
